@@ -2,7 +2,6 @@ package com.jonjia.readinglist;
 
 import java.util.List;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,19 +12,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 @RequestMapping("/readingList")
-@ConfigurationProperties(prefix="amazon")
 public class ReadingListController {
 
-  private String associateId;
-
   private ReadingListRepository readingListRepository;
-  
-  public ReadingListController(ReadingListRepository readingListRepository) {
+  private AmazonProperties amazonProperties
+  ;
+  public ReadingListController(ReadingListRepository readingListRepository, AmazonProperties amazonProperties) {
     this.readingListRepository = readingListRepository;
-  }
-
-  public void setAssociateId(String associateId) {
-    this.associateId = associateId;
+    this.amazonProperties = amazonProperties;
   }
 
   @GetMapping("/{reader}")
@@ -34,7 +28,7 @@ public class ReadingListController {
     if (readingList != null) {
       model.addAttribute("books", readingList);
       model.addAttribute("reader", reader);
-      model.addAttribute("amazonID", associateId);
+      model.addAttribute("amazonID", amazonProperties.getAssociateId());
     }
     return "readingList";
   }
